@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">AdsKit Demo App</string>
+
+    <string name="reward_ad">Reward Ad</string>
+    <string name="interstitial_ad">Interstitial Ad</string>
+    <string name="splash_ad">Splash Ad</string>
+    <string name="banner_ad">Banner Ad</string>
+    <string name="native_ad">Native Ad</string>
+
+
+    <string name="watch_video_button_text">Watch Reward Video</string>
+    <string name="reward_ad_title">This is reward ad sample.</string>
+    <string name="reward_ad_id">testx9dtjwj8hp</string>
+
+
+    <string name="interstitial_title_text">This is interstitial ad sample.</string>
+    <string name="image_ad_id">teste9ih9j0rc3</string>
+    <string name="video_ad_id">testb4znbuh3n2</string>
+    <string name="load_button">Load Interstitial Ad</string>
+    <string name="display_form">Display form :</string>
+    <string name="interstitial_display_picture">Image</string>
+    <string name="interstitial_display_video">Video</string>
+    <string name="show_interstitial_ads">Show Interstitial Ads</string>
+
+    <string name="ad_id_splash">testq6zq98hecj</string>
+    <string name="status_load_ad_success">Ad loading state: loaded successfully.</string>
+    <string name="status_load_ad_fail">Ad loading state: failed to be loaded. Error code: </string>
+    <string name="status_ad_dismissed">Ad is dismissed.</string>
+
+    <string name="ad_id_banner">testw6vs28auh3</string>
+
+
+    <!--    native Ad-->
+    <string name="large">Large image native ad example.</string>
+    <string name="small">Small image native ad example.</string>
+    <string name="video">Video native ad example.</string>
+    <string name="status_ad_loading">Ad loading state: being loaded.</string>
+    <string name="status_play_start">Video playback state: starting to be played.</string>
+    <string name="status_playing">Video playback state: being played.</string>
+    <string name="status_play_end">Video playback state: playback completed.</string>
+    <string name="ad_is_closed">Ad is closed.</string>
+
+    <string name="ad_id_native"> testu7m3hc4gvm </string>
+    <string name="ad_id_native_small">testb65czjivt9</string>
+    <string name="ad_id_native_video">testy63txaom86</string>
+    <string name="ad_flag">Ad</string>
+</resources>
