@@ -15,30 +15,26 @@ import com.huawei.hms.ads.splash.SplashView
 import com.huawei.hms.ads.splash.SplashView.SplashAdLoadListener
 
 class SplashActivity : AppCompatActivity() {
+    private lateinit var splashView: SplashView
     private val TAG = SplashActivity::class.java.simpleName
-
-    private var splashView: SplashView? = null
 
     // Ad display timeout interval, in milliseconds.
     private val AD_TIMEOUT = 25000
     // Ad display timeout message flag.
     private val MSG_AD_TIMEOUT = 1001
 
-    /**
-     * Pause flag.
+    /** Pause flag.
      * On the splash ad screen:
      * Set this parameter to true when exiting the app to ensure that the app home screen is not displayed.
-     * Set this parameter to false when returning to the splash ad screen from another screen to ensure that the app home screen can be displayed properly.
-     */
+     * Set this parameter to false when returning to the splash ad screen from another screen to ensure that the app home screen can be displayed properly.*/
     private var hasPaused = false
 
     // Callback handler used when the ad display timeout message is received.
     private val timeoutHandler = Handler(Handler.Callback {
-            if (hasWindowFocus()) {
-                jump()
-            }
-            false
-        })
+        if (hasWindowFocus())
+            jump()
+        false
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,16 +44,33 @@ class SplashActivity : AppCompatActivity() {
         loadSplashAd()
     }
 
+    private fun loadSplashAd() {
+        Log.i(TAG, "Start to load splash ad")
+        val adParam = AdParam.Builder().build()
+        splashView = findViewById(R.id.splash_ad_view)
+        splashView.setAdDisplayListener(adDisplayListener)
+        // Set the audio focus type for a video splash ad.
+        splashView.setAudioFocusType(AudioFocusType.NOT_GAIN_AUDIO_FOCUS_WHEN_MUTE)
+        splashView.load(
+            getString(R.string.ad_id_splash),
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+            adParam,
+            splashAdLoadListener
+        )
 
-    private fun getSplashAdLoadListener() :SplashAdLoadListener {
-        return object : SplashAdLoadListener() {
+        // Remove the timeout message from the message queue.
+        timeoutHandler.removeMessages(MSG_AD_TIMEOUT)
+        // Send a delay message to ensure that the app home screen can be displayed when the ad display times out.
+        timeoutHandler.sendEmptyMessageDelayed(
+            MSG_AD_TIMEOUT,
+            AD_TIMEOUT.toLong()
+        )
+    }
+
+    private val splashAdLoadListener :SplashAdLoadListener = object : SplashAdLoadListener() {
             override fun onAdLoaded() { // Calls this method when an ad is successfully loaded.
                 Log.i(TAG, "SplashAdLoadListener onAdLoaded.")
-                Toast.makeText(
-                    this@SplashActivity,
-                    getString(R.string.status_load_ad_success),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this@SplashActivity,getString(R.string.status_load_ad_success),Toast.LENGTH_SHORT).show()
             }
 
             override fun onAdFailedToLoad(errorCode: Int) { // Calls this method when an ad fails to be loaded.
@@ -71,12 +84,9 @@ class SplashActivity : AppCompatActivity() {
                 Toast.makeText(this@SplashActivity,getString(R.string.status_ad_dismissed),Toast.LENGTH_SHORT).show()
                 jump()
             }
-
         }
-    }
 
-    private fun getAdDisplayListener(): SplashAdDisplayListener {
-        return object : SplashAdDisplayListener() {
+    private val adDisplayListener: SplashAdDisplayListener = object : SplashAdDisplayListener() {
             override fun onAdShowed() { // Calls this method when an ad is displayed.
                 Log.i(TAG, "SplashAdDisplayListener onAdShowed.")
             }
@@ -85,38 +95,7 @@ class SplashActivity : AppCompatActivity() {
                 Log.i(TAG, "SplashAdDisplayListener onAdClick.")
             }
         }
-    }
 
-
-
-    private fun loadSplashAd() {
-        Log.i(TAG, "Start to load splash ad")
-        val adParam = AdParam.Builder().build()
-        splashView = findViewById(R.id.splash_ad_view)
-        splashView?.setAdDisplayListener(getAdDisplayListener())
-        // Set a logo image.
-        splashView?.setLogoResId(R.mipmap.ic_launcher)
-        // Set logo description.
-        splashView?.setMediaNameResId(R.string.app_name)
-        // Set the audio focus type for a video splash ad.
-        splashView?.setAudioFocusType(AudioFocusType.NOT_GAIN_AUDIO_FOCUS_WHEN_MUTE)
-        splashView?.load(
-            getString(R.string.ad_id_splash),
-            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
-            adParam,
-            getSplashAdLoadListener()
-        )
-
-
-        Log.i(TAG, "End to load ad")
-        // Remove the timeout message from the message queue.
-        timeoutHandler.removeMessages(MSG_AD_TIMEOUT)
-        // Send a delay message to ensure that the app home screen can be displayed when the ad display times out.
-        timeoutHandler.sendEmptyMessageDelayed(
-            MSG_AD_TIMEOUT,
-            AD_TIMEOUT.toLong()
-        )
-    }
 
     /**
      * Switch from the splash ad screen to the app home screen when the ad display is complete.
@@ -156,21 +135,21 @@ class SplashActivity : AppCompatActivity() {
     override fun onDestroy() {
         Log.i(TAG, "SplashActivity onDestroy.")
         super.onDestroy()
-            splashView?.destroyView()
+            splashView.destroyView()
 
     }
 
     override fun onPause() {
         Log.i(TAG, "SplashActivity onPause.")
         super.onPause()
-        splashView?.pauseView()
+        splashView.pauseView()
         hasPaused = true
     }
 
     override fun onResume() {
         Log.i(TAG, "SplashActivity onResume.")
         super.onResume()
-            splashView?.resumeView()
+            splashView.resumeView()
     }
 
 }

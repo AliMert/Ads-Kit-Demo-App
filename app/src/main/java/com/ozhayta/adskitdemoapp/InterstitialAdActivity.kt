@@ -13,25 +13,38 @@ import com.huawei.hms.ads.HwAds
 import com.huawei.hms.ads.InterstitialAd
 
 class InterstitialAdActivity : AppCompatActivity() {
+    private lateinit var interstitialAd: InterstitialAd
 
     private val TAG = InterstitialAdActivity::class.java.simpleName
-
-    private var displayRadioGroup: RadioGroup? = null
-    private var loadAdButton: Button? = null
-
-    private var interstitialAd: InterstitialAd? = null
+    private lateinit var displayRadioGroup: RadioGroup
+    private lateinit var loadAdButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_interstitial_ad)
-
         // Initialize the HUAWEI Ads SDK.
         HwAds.init(this)
 
         displayRadioGroup = findViewById(R.id.display_radio_group)
 
         loadAdButton = findViewById(R.id.load_ad)
-        loadAdButton?.setOnClickListener{ loadInterstitialAd() }
+        loadAdButton.setOnClickListener{ loadInterstitialAd() }
+    }
+
+    private fun loadInterstitialAd() {
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.adId = getAdId()
+        interstitialAd.adListener = adListener
+        val adParam = AdParam.Builder().build()
+        interstitialAd.loadAd(adParam)
+    }
+
+    private fun getAdId(): String {
+        return if (displayRadioGroup.checkedRadioButtonId == R.id.display_image) {
+            getString(R.string.image_ad_id)
+        } else {
+            getString(R.string.video_ad_id)
+        }
     }
 
     private val adListener: AdListener = object : AdListener() {
@@ -41,7 +54,6 @@ class InterstitialAdActivity : AppCompatActivity() {
             // Display an interstitial ad.
             showInterstitial()
         }
-
         override fun onAdFailed(errorCode: Int) {
             Toast.makeText(
                 this@InterstitialAdActivity, "Ad load failed with error code: $errorCode",
@@ -49,44 +61,26 @@ class InterstitialAdActivity : AppCompatActivity() {
             ).show()
             Log.d(TAG, "Ad load failed with error code: $errorCode")
         }
-
         override fun onAdClosed() {
             super.onAdClosed()
             Log.d(TAG, "onAdClosed")
         }
-
         override fun onAdClicked() {
             Log.d(TAG, "onAdClicked")
             super.onAdClicked()
         }
-
         override fun onAdOpened() {
             Log.d(TAG, "onAdOpened")
             super.onAdOpened()
         }
     }
 
-    private fun loadInterstitialAd() {
-        interstitialAd = InterstitialAd(this)
-        interstitialAd?.adId = getAdId()
-        interstitialAd?.adListener = adListener
-        val adParam = AdParam.Builder().build()
-        interstitialAd?.loadAd(adParam)
-    }
-
-    private fun getAdId(): String? {
-        return if (displayRadioGroup!!.checkedRadioButtonId == R.id.display_image) {
-            getString(R.string.image_ad_id)
-        } else {
-            getString(R.string.video_ad_id)
-        }
-    }
-
     private fun showInterstitial() { // Display an interstitial ad.
-        if (interstitialAd != null && interstitialAd!!.isLoaded) {
-            interstitialAd!!.show()
+        if (interstitialAd.isLoaded) {
+            interstitialAd.show()
         } else {
             Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
